@@ -1,0 +1,22 @@
+body { 
+   background-color: #efefef;
+   color: #333;
+   font-family: 'Duru Sans', sans-serif;
+}
+
+h1 { 
+   font-size: 22px;
+}
+
+img { 
+   border: 1px solid #ddd;
+   padding: 7px;
+   background-color: #fff;
+}
+#content { 
+   text-align: center;
+   text-shadow: 0px -1px 0px #fff;
+   width: 800px;
+   margin: 30px auto;
+   padding: 15px;
+}
