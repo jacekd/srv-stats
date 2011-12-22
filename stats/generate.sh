@@ -1,0 +1,11 @@
+#!/bin/bash
+# LOAD
+/usr/bin/rrdupdate /root/stats/rrds/load.rrd  $(/usr/bin/awk '{ print "N:"$1":"$2":"$3 }' /proc/loadavg )
+/usr/bin/rrdtool graph /data/Documents/stats/load.png   --start now-3day   --vertical-label "Load averages"   --title "Bravo Load" --border 0  --grid-dash 1:0 --dynamic-labels --x-grid HOUR:8:DAY:1:DAY:1:43200:%A  --width 600   --height 200   --alt-autoscale-max   --lower-limit 0   DEF:1minavg=/root/stats/rrds/load.rrd:1min:AVERAGE DEF:5minavg=/root/stats/rrds/load.rrd:5min:AVERAGE DEF:15minavg=/root/stats/rrds/load.rrd:15min:AVERAGE LINE2:1minavg#006400:"1 min"  LINE2:5minavg#8B8989:"5 min"  LINE2:15minavg#bcee68:"15 min" GPRINT:5minavg:AVERAGE:"Avg\:%3.2lf"   GPRINT:5minavg:MAX:"Max\:%3.2lf\n"   COMMENT:"last update\: $(date "+%A %d, %H\\:%M")"  
+# ETH
+/usr/bin/rrdtool update /root/stats/rrds/eth.rrd $(/usr/bin/vnstat | awk '/rx:/ { print "N:"$2":"$5 }')
+/usr/bin/rrdtool graph /data/Documents/stats/eth.png   --start now-3day   --vertical-label "RX/TX Monthly usage"   --title "Bravo Network Usage" --border 0  --grid-dash 1:0 --dynamic-labels --x-grid HOUR:8:DAY:1:DAY:1:43200:%A  --width 600   --height 200   --alt-autoscale-max   --lower-limit 0   DEF:lxa=/root/stats/rrds/eth.rrd:rx:AVERAGE DEF:rxa=/root/stats/rrds/eth.rrd:tx:AVERAGE AREA:lxa#006400:"LX"  AREA:rxa#8B8989:"RX" COMMENT:"last update\: $(date "+%A %d, %H\\:%M")"
+
+# HDD
+/usr/bin/rrdupdate /root/stats/rrds/hdd.rrd N:$(/usr/sbin/hddtemp /dev/sd[a-h] | /usr/bin/awk '{gsub("°C", "");print $NF}' | /usr/bin/awk '$1=$1' OFS=":" RS=)
+/usr/bin/rrdtool graph /data/Documents/stats/hdd.png   --start now-3day   --vertical-label "Temperatures"   --title "HDD Temperatures" --border 0  --grid-dash 1:0 --dynamic-labels --x-grid HOUR:8:DAY:1:DAY:1:43200:%A  --width 600   --height 200   --alt-autoscale-max   --lower-limit 0   DEF:sdaa=/root/stats/rrds/hdd.rrd:sda:AVERAGE  DEF:sdba=/root/stats/rrds/hdd.rrd:sdb:AVERAGE  DEF:sdca=/root/stats/rrds/hdd.rrd:sdc:AVERAGE  DEF:sdda=/root/stats/rrds/hdd.rrd:sdd:AVERAGE  DEF:sdea=/root/stats/rrds/hdd.rrd:sde:AVERAGE  DEF:sdfa=/root/stats/rrds/hdd.rrd:sdf:AVERAGE LINE2:sdaa#F08080:"sda" LINE2:sdba#FF1493:"sdb" LINE2:sdca#8B3A62:"sdc" LINE2:sdda#FF4500:"sdd" LINE2:sdea#68228B:"sde" LINE2:sdfa#00008B:"sdf" COMMENT:"last update\: $(date "+%A %d, %H\\:%M")"
